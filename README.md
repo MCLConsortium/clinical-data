@@ -11,12 +11,23 @@ Or we might break this into three separate repositories. This is all up in the a
 
 ## 🚙 Getting Started
 
-We'll figure this out later.
+Well you can run `db.sh` to create a local PostgreSQL database. You can then access it with:
+
+    psql --username=mcl --no-password clinical_data
+
+Or from SQLAlchemy with:
+
+```python
+from sqlalchemy import create_engine
+engine = create_engine('postgresql://mcl@localhost/clinical_data')
+```
 
 
 ## 📀 Software Environment
 
-Who knows? 🤔
+We're still figuring this out. 🤔
+
+For now, there's a budding prototype in the `sickbay` subdirectory.
 
 
 ### 👥 Contributing

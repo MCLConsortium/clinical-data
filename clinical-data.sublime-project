@@ -1,0 +1,31 @@
+{
+   "folders" : [
+      {
+         "path" : ".",
+         "file_exclude_patterns" : [
+            "*.sublime-*"
+         ],
+         "folder_excude_patterns" : []
+      },
+      {
+         "path" : "sickbay",
+         "file_exclude_patterns" : [
+            ".*.cfg",
+            "bootstrap.py",
+            "doc.txt"
+         ],
+         "folder_exclude_patterns" : [
+            "bin",
+            "develop-eggs",
+            "dist",
+            "build",
+            "*.egg-info",
+            "parts",
+            "var",
+            "__pycache__",
+            "test_*"
+         ]
+      }
+   ]
+}
+
