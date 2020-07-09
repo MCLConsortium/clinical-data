@@ -10,7 +10,15 @@ from sqlalchemy import Column, Integer, String, Boolean, Float, Date
 _base = delcarative_base()
 
 
-class ClinicalCore(_base):
+class LabCASMetadata(_base):
+    '''🤔 Base metadata from LabCAS for all clinlcal data'''
+
+    collectionID = Column(String)
+    datasetID = Column(String)
+    fileID = Column(String)
+
+
+class ClinicalCore(LabCASMetadata):
     '''🩺 Core clinical data; this has a 1-to-many relationship with the rest of the world'''
 
     __tablename__ = 'ClinicalCore'
@@ -63,7 +71,7 @@ class ClinicalCore(_base):
     alcohol_days_per_week              = Column(Integer)
 
 
-class Organ(_base):
+class Organ(LabCASMetadata):
     '''♥️ This is the generic base class common to all organs.'''
 
     __tablename__ = 'Organ'
@@ -131,7 +139,7 @@ class ProstateOrgan(Organ):
 # Add other organs here
 
 
-class Biospecmen(_base):
+class Biospecmen(LabCASMetadata):
     '''🧪 Biological specimen data'''
 
     __tablename__ = 'Biospecimen'
@@ -173,7 +181,7 @@ class Biospecmen(_base):
     shipping_destination        = Column(String)
 
 
-class Genomics(_base):
+class Genomics(LabCASMetadata):
     '''🧬 Structure, function, evolution, and mapping of genome data'''
 
     __tablename__ = 'Genomics'
@@ -212,7 +220,7 @@ class Genomics(_base):
     indexing_type_other              = Column(String)
 
 
-class Imaging(_base):
+class Imaging(LabCASMetadata):
     '''🖼 Imaging'''
 
     __tablename__ = 'Imaging'
