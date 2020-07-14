@@ -7,10 +7,10 @@ from sqlalchemy.ext.declarative import delcarative_base
 from sqlalchemy import Column, Integer, String, Boolean, Float, Date
 
 
-_base = delcarative_base()
+Base = delcarative_base()
 
 
-class LabCASMetadata(_base):
+class LabCASMetadata(Base):
     '''🤔 Base metadata from LabCAS for all clinlcal data'''
 
     collectionID = Column(String)
