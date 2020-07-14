@@ -29,6 +29,13 @@ We're still figuring this out. 🤔
 
 For now, there's a budding prototype in the `sickbay` subdirectory.
 
+### 📦 Resources
+
+Here are some handy links:
+
+-   [Sample data, presentations, mockups, etc.](https://drive.google.com/drive/folders/1oXqRl-Aw2TSF70D9sPJaW99F9hyPiFHY?usp=sharing)
+-   [Common Data Elements](https://mcl.nci.nih.gov/resources/standards/mcl-cdes)
+
 
 ### 👥 Contributing
 
