@@ -5,7 +5,9 @@
          "file_exclude_patterns" : [
             "*.sublime-*"
          ],
-         "folder_excude_patterns" : []
+         "folder_excude_patterns" : [
+            "sickbay"
+         ]
       },
       {
          "path" : "sickbay",
