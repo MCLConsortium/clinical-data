@@ -27,7 +27,11 @@ engine = create_engine('postgresql://mcl@localhost/clinical_data')
 
 We're still figuring this out. 🤔
 
-For now, there's a budding prototype in the `sickbay` subdirectory.
+So far, though, we have:
+
+- [mcl.sickbay](https://pypi.org/project/mcl.sickbay/), the data model and ORM for clinical data for the Consortium for Molecular and Cellular Characterization of Screen-Detected Lesions
+- [mcl.infirmary](https://pypi.org/project/mcl.infirmary/), the user interface for the clinical data application for the Consortium for Molecular and Cellular Characterization of Screen-Detected Lesions
+
 
 ### 📦 Resources
 
