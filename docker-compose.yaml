@@ -1,0 +1,96 @@
+# 🧪 Docker Composition for the Clinical Data App of MCL
+# ======================================================
+#
+# This is the Docker Composition for the Clinical Data App for the Consortium
+# for Molecular and Cellular Characterization of Screen-Detected Lesions.
+
+
+# Services
+# --------
+#
+services:
+    # Database
+    # ~~~~~~~~
+    #
+    # Good old relational database!
+    db:
+        container_name: clinical-db
+        image: postgres:12.4
+        volumes:
+            -
+                type: bind
+                source: ${CLINICAL_DATA_DIR}/postgresql
+                target: /var/lib/postgresql/data
+                consistency: consistent
+        ports:
+            -
+                # Map container's PostgreSQL port to the traditional port, or whatever CLINICAL_DB_PORT is
+                target: 5432
+                published: ${CLINICAL_DB_PORT:-5432}
+                protocol: tcp
+                mode: host
+        networks:
+            - mainbus
+            - default
+        environment:
+            # Empty settings inherit values from the host's environment
+            CLINICAL_DATA_DIR:
+            CLINICAL_DB_PORT:
+            POSTGRES_PASSWORD:
+        restart: always
+        stop_grace_period: 29s
+        labels:
+            org.label-schema.name: MCL Clinical DB
+            org.label-schema.description: PostgreSQL database serving the MCL Clinical Data App.
+
+    # ReST API
+    # ~~~~~~~~
+    #
+    # A Python app using Pyramid providing a ReST API
+    api:
+        container_name: clinical-api
+        image: nutjob4life/mcl-infirmary:latest
+        # image: mcl-infirmary:latest
+        ports:
+            -
+                # Map container's Pyramid app on 8080 to a more traditional (for Pyramid) 6543
+                # or whatever CLINICAL_API_PORT is.
+                target: 8080
+                published: ${CLINICAL_API_PORT:-6543}
+                protocol: tcp
+                mode: host
+        networks:
+            - mainbus
+            - default
+        environment:
+            DATABASE: postgresql://mcl:mcl@db/clinical_data
+            # Empty settings inherit values from the host's environment
+            CLINICAL_API_PORT:
+        depends_on:
+            - db
+        restart: always
+        stop_grace_period: 13s
+        labels:
+            org.label-schema.name: MCL Clinical API
+            org.label-schema.description: ReST API serving the MCL Clinical Data App.
+
+
+# Networks
+# --------
+#
+# Thankfully, this is pretty simple.
+networks:
+    mainbus:
+        driver: bridge
+        labels:
+            org.label-schema.name: MCL Main Bus Network
+            org.label-schema.description: Internal bridge network so the services that comprise the MCL Clinical Data app may communicate.
+    default:
+        driver: bridge
+
+
+# Misc
+# ----
+#
+# Only thing we have here is some Docker Compose metadata.
+version: '3.7'
