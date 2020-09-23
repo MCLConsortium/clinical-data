@@ -80,7 +80,7 @@ And fill out its schema and sample data:
         --project-name clinic \
         exec \
         api \
-        create-demo-db \
+        create-clinical-db \
             --host db \
             --password \
             --add-test-data \
