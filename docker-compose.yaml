@@ -19,7 +19,7 @@ services:
         volumes:
             -
                 type: bind
-                source: ${CLINICAL_DATA_DIR}/postgresql
+                source: ${CLINICAL_DATA_DIR:-/usr/local/labcas/mcl/clinic/docker-data}/postgresql
                 target: /var/lib/postgresql/data
                 consistency: consistent
         ports:
@@ -49,7 +49,9 @@ services:
     # A Python app using Pyramid providing a ReST API
     api:
         container_name: clinical-api
-        image: nutjob4life/mcl-infirmary:latest
+        # image: mcl-infirmary:${CLINICAL_API_VERSION:-latest}
+        image: ${MCL_IMAGE_OWNER-nutjob4life/}mcl-infirmary:${CLINICAL_API_VERSION:-latest}
+        # image: nutjob4life/mcl-infirmary:latest
         # image: mcl-infirmary:latest
         ports:
             -

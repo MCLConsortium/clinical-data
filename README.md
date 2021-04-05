@@ -16,19 +16,16 @@ This section tells how to get this software going.
 
 ### 👶 Initial Start
 
-For the **initial start up**, we need to define a Postgres server password, create clinical data database, fill out its schema, and populate it with test and sample data. To do that, run the following, and replace `SECRET` with a top-secret password for Postgres.
+For the **initial start up**, we need to define a Postgres server password, create clinical data database, fill out its schema, and populate it with test and sample data. To do that, run the following. (Looks like we're keeping this secret password in the file `postgres-passwd.txt`.)
 
 First, make a directory to hold the data:
 
     mkdir -p /usr/local/labcas/mcl/clinic/docker-data/postgresql
 
-Start the system with the `SECRET` password:
+Start the system with the seret password:
 
     env \
-        POSTGRES_PASSWORD=SECRET \
-        CLINICAL_DB_PORT=5432 \
-        CLINICAL_API_PORT=6543 \
-        CLINICAL_DATA_DIR=/usr/local/labcas/mcl/clinic/docker-data \
+        POSTGRES_PASSWORD=$(cat postgres-passwd.txt) \
         docker-compose \
         --project-name clinic \
         up \
@@ -36,11 +33,7 @@ Start the system with the `SECRET` password:
 
 Create the `mcl` database user:
 
-    env \
-        CLINICAL_DB_PORT=5432 \
-        CLINICAL_API_PORT=6543 \
-        CLINICAL_DATA_DIR=/usr/local/labcas/mcl/clinic/docker-data \
-        docker-compose \
+    docker-compose \
         --project-name clinic \
         exec \
         db \
@@ -56,11 +49,7 @@ Create the `mcl` database user:
 
 When prompted, enter a password for the user, the same as the username. (Enter it twice.) Then, create the empty database:
 
-    env \
-        CLINICAL_DB_PORT=5432 \
-        CLINICAL_API_PORT=6543 \
-        CLINICAL_DATA_DIR=/usr/local/labcas/mcl/clinic/docker-data \
-        docker-compose \
+    docker-compose \
         --project-name clinic \
         exec \
         db \
@@ -72,11 +61,7 @@ When prompted, enter a password for the user, the same as the username. (Enter i
 
 And fill out its schema and sample data:
 
-    env \
-        CLINICAL_DB_PORT=5432 \
-        CLINICAL_API_PORT=6543 \
-        CLINICAL_DATA_DIR=/usr/local/labcas/mcl/clinic/docker-data \
-        docker-compose \
+    docker-compose \
         --project-name clinic \
         exec \
         api \
@@ -88,13 +73,7 @@ And fill out its schema and sample data:
 
 When prompted, use the same password as you entered when prompted above. Now shut it all down:
 
-    env \
-        CLINICAL_DB_PORT=5432 \
-        CLINICAL_API_PORT=6543 \
-        CLINICAL_DATA_DIR=/usr/local/labcas/mcl/clinic/docker-data \
-        docker-compose \
-        --project-name clinic \
-        down
+    docker-compose --project-name clinic down
 
 Then start it as you would routinely start it, described in the next section.
 
@@ -103,24 +82,11 @@ Then start it as you would routinely start it, described in the next section.
 
 After the initial startup (above), here's what you need to do to get things running normally:
 
-    env \
-        CLINICAL_DB_PORT=5432 \
-        CLINICAL_API_PORT=6543 \
-        CLINICAL_DATA_DIR=/usr/local/labcas/mcl/clinic/docker-data \
-        docker-compose \
-        --project-name clinic \
-        up \
-        --detach
+    docker-compose --project-name clinic up --detach
 
 You can check on things with:
 
-    env \
-        CLINICAL_DB_PORT=5432 \
-        CLINICAL_API_PORT=6543 \
-        CLINICAL_DATA_DIR=/usr/local/labcas/mcl/clinic/docker-data \
-        docker-compose \
-        --project-name clinic \
-        logs
+    docker-compose --project-name clinic logs
 
 You can see if it's answering locally with:
 
@@ -128,13 +94,33 @@ You can see if it's answering locally with:
 
 Need to bring it down? Just do this:
 
-    env \
-        CLINICAL_DB_PORT=5432 \
-        CLINICAL_API_PORT=6543 \
-        CLINICAL_DATA_DIR=/usr/local/labcas/mcl/clinic/docker-data \
-        docker-compose \
+    docker-compose --project-name clinic down
+
+Back up the database:
+
+    docker-compose \
         --project-name clinic \
-        down
+        exec \
+        db \
+            pg_dump \
+                --dbname=clinical_data \
+                --username=mcl \
+                --encoding=UTF8 \
+                --password  > some-backup.sql
+
+Nothing happening? That's because it's waiting for a password whose prompt got swallowed into the `some-backup.sql` file. Go ahead and enter it, then edit `some-backup.sql` and remove the prompt. Also, copy the file `some-backup.sql` to a better name and to a safer system.
+
+
+### 🌱 Environment
+
+By default, the `docker-compose.yaml` is set up to run the production instance of the Clinical Data application on `edrn-docker.jpl.nasa.gov`. You can specify the following environment variables to override settings; this is typically only needed in development:
+
+- `CLINICAL_API_PORT`: This defaults to 6543, to which the front-end web server for `https://mcl.jpl.nasa.gov/infirmary` reverse-proxies in order to provide access to the Clinical Data API.
+- `CLINICAL_API_VERSION`: This defaults to `latest`, but you can and should override this with a specific tag.
+- `CLINICAL_DATA_DIR`: This tells where to find the PostgreSQL data volume; it's usually set to `/usr/local/labcas/mcl/clinic/docker-data` and there should be a `postgresql` directory inside of it.
+- `CLINICAL_DB_PORT`: This defaults to 5432, which is the usual TCP port for PostgreSQL. You'll almost never need to change this.
+- `MCL_IMAGE_OWNER`: This defaults to `nutjob4life/` but you can set it to an empty string in order to make Docker use your local image repository.
+
 
 
 ## 📀 Software Environment
