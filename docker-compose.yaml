@@ -66,9 +66,10 @@ services:
             - default
         environment:
             DATABASE: postgresql://mcl:mcl@db/clinical_data
-            LDAP_SERVER: ldaps://edrn.jpl.nasa.gov
+            LDAP_SERVER: ldaps://edrn-ds.jpl.nasa.gov
             # Empty settings inherit values from the host's environment
             CLINICAL_API_PORT:
+            CLINICAL_API_VERSION:
         depends_on:
             - db
         restart: always
