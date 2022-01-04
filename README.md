@@ -22,7 +22,7 @@ First, make a directory to hold the data:
 
     mkdir -p /usr/local/labcas/mcl/clinic/docker-data/postgresql
 
-Start the system with the seret password:
+Start the system with the secret password:
 
     env \
         POSTGRES_PASSWORD=$(cat postgres-passwd.txt) \
@@ -116,11 +116,12 @@ Nothing happening? That's because it's waiting for a password whose prompt got s
 By default, the `docker-compose.yaml` is set up to run the production instance of the Clinical Data application on `edrn-docker.jpl.nasa.gov`. You can specify the following environment variables to override settings; this is typically only needed in development:
 
 - `CLINICAL_API_PORT`: This defaults to 6543, to which the front-end web server for `https://mcl.jpl.nasa.gov/infirmary` reverse-proxies in order to provide access to the Clinical Data API.
-- `CLINICAL_API_VERSION`: This defaults to `latest`, but you can and should override this with a specific tag.
+- `CLINICAL_API_V1_VERSION`: This defaults to `1.0.0`, but you can override this with a specific tag if needed.
+- `CLINICAL_API_V2_VERSION`: This defaults to `1.0.2`, but you can override this with a specific tag if needed.
+- `CLINICAL_API_V3_VERSION`: This defaults to `latest`, but you can and should override this with a specific tag.
 - `CLINICAL_DATA_DIR`: This tells where to find the PostgreSQL data volume; it's usually set to `/usr/local/labcas/mcl/clinic/docker-data` and there should be a `postgresql` directory inside of it.
 - `CLINICAL_DB_PORT`: This defaults to 5432, which is the usual TCP port for PostgreSQL. You'll almost never need to change this.
 - `MCL_IMAGE_OWNER`: This defaults to `nutjob4life/` but you can set it to an empty string in order to make Docker use your local image repository.
-
 
 
 ## 📀 Software Environment

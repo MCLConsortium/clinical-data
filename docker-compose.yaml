@@ -46,13 +46,10 @@ services:
     # ReST API
     # ~~~~~~~~
     #
-    # A Python app using Pyramid providing a ReST API
-    api:
-        container_name: clinical-api
-        # image: mcl-infirmary:${CLINICAL_API_VERSION:-latest}
-        image: ${MCL_IMAGE_OWNER-nutjob4life/}mcl-infirmary:${CLINICAL_API_VERSION:-latest}
-        # image: nutjob4life/mcl-infirmary:latest
-        # image: mcl-infirmary:latest
+    # A Python app using Pyramid providing a ReST API; version 1
+    api-v1:
+        container_name: clinical-api-v1
+        image: ${MCL_IMAGE_OWNER-nutjob4life/}mcl-infirmary:${CLINICAL_API_V1_VERSION:-1.0.0}
         ports:
             -
                 # Map container's Pyramid app on 8080 to a more traditional (for Pyramid) 6543
@@ -75,8 +72,61 @@ services:
         restart: always
         stop_grace_period: 13s
         labels:
-            org.label-schema.name: MCL Clinical API
-            org.label-schema.description: ReST API serving the MCL Clinical Data App.
+            org.label-schema.name: MCL Clinical API v1
+            org.label-schema.description: Version 1 of the ReST API serving the MCL Clinical Data App.
+    api-v2:
+        container_name: clinical-api-v2
+        image: ${MCL_IMAGE_OWNER-nutjob4life/}mcl-infirmary:${CLINICAL_API_V2_VERSION:-1.0.2}
+        ports:
+            -
+                # Map container's Pyramid app on 8080 to 6544
+                target: 8080
+                published: ${CLINICAL_API_V2_PORT:-6544}
+                protocol: tcp
+                mode: host
+        networks:
+            - mainbus
+            - default
+        environment:
+            DATABASE: postgresql://mcl:mcl@db/clinical_data
+            LDAP_SERVER: ldaps://edrn-ds.jpl.nasa.gov
+            # Empty settings inherit values from the host's environment
+            CLINICAL_API_PORT:
+            CLINICAL_API_VERSION:
+        depends_on:
+            - db
+        restart: always
+        stop_grace_period: 13s
+        labels:
+            org.label-schema.name: MCL Clinical API v2
+            org.label-schema.description: Version 2 of the ReST API serving the MCL Clinical Data App.
+    api-v3:
+        container_name: clinical-api-v3
+        image: ${MCL_IMAGE_OWNER-nutjob4life/}mcl-infirmary:${CLINICAL_API_V3_VERSION:-latest}
+        ports:
+            -
+                # Map container's Pyramid app on 8080 to 6544
+                target: 8080
+                published: ${CLINICAL_API_V3_PORT:-6545}
+                protocol: tcp
+                mode: host
+        networks:
+            - mainbus
+            - default
+        environment:
+            DATABASE: postgresql://mcl:mcl@db/clinical_data_v3
+            LDAP_SERVER: ldaps://edrn-ds.jpl.nasa.gov
+            # Empty settings inherit values from the host's environment
+            CLINICAL_API_PORT:
+            CLINICAL_API_VERSION:
+        depends_on:
+            - db
+        restart: always
+        stop_grace_period: 13s
+        labels:
+            org.label-schema.name: MCL Clinical API v3
+            org.label-schema.description: Version 3 of the ReST API serving the MCL Clinical Data App.
+
 
 
 # Networks
